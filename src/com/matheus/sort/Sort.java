@@ -104,9 +104,63 @@ public abstract class Sort{
         System.out.println("Insertion sort\nComparisons: " + comparisons + " Assignments: " + assignments + " Array accesses: " + arrayAccesses);
     }
 
+    public static void shell(Integer[] array) {
+        int increment;
+        int temp;
+
+        assignments++;
+        increment = array.length / 2;
+
+        resetCounters();
+
+        comparisons++; // increment > 0
+        while (increment > 0) {
+            comparisons++; // incremwent > 0
+
+            assignments++; // i = increment
+            for (i = increment; i < array.length; i++) {
+                comparisons++; // i < array...
+                assignments++; // i++
+                assignments++; // j = i
+                assignments++; // temp = ...
+                arrayAccesses++; // array[i]
+
+                j = i;
+                temp = array[i];
+
+                comparisons++; // j >= increment
+                arrayAccesses++; // array[...]
+                comparisons++; // array[...] > temp
+                while (j >= increment && array[j - increment] > temp) {
+                    comparisons++; // j >= increment
+                    arrayAccesses++; // array[...]
+                    comparisons++; // array[...] > temp
+                    arrayAccesses += 2; // array[j] = array[...]
+                    assignments++; // j -= increment
+                    array[j] = array[j - increment];
+                    j -= increment;
+                }
+                arrayAccesses++; // array[j]
+                assignments++; // next line
+                array[j] = temp;
+            }
+            comparisons++; // if
+            assignments++; // if/else
+            if (increment == 2) {
+                increment = 1;
+            }
+            else {
+                increment *= (5.0 / 11);
+            }
+        }
+        System.out.println("Shell sort\nComparisons: " + comparisons + " Assignments: " + assignments + " Array accesses: " + arrayAccesses);
+    }
+
+
+
     private static void resetCounters() {
         comparisons = 0L;
         assignments = 0L;
         arrayAccesses = 0L;
     }
-}
+ }

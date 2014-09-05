@@ -8,7 +8,7 @@ import java.util.List;
  * Created by matheus on 28/08/14.
  */
 public class Main {
-    private static int SIZE = 100000;
+    private static int SIZE = 10000;
 
     public static void main(String[] args) {
         Integer[] array = new Integer[SIZE];
@@ -30,6 +30,9 @@ public class Main {
 
         array = list.toArray(array);
         Sort.insertion(array);
+
+        array = list.toArray(array);
+        Sort.shell(array);
 
     }
 }
