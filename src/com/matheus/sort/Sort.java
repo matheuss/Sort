@@ -156,7 +156,218 @@ public abstract class Sort{
         System.out.println("Shell sort\nComparisons: " + comparisons + " Assignments: " + assignments + " Array accesses: " + arrayAccesses);
     }
 
+    public static void heap(Integer[] array) {
+        int count;
+        int end;
+        int tmp;
 
+        resetCounters();
+        assignments += 2;
+        count = array.length;
+        end = count - 1;
+
+        heapify(array, count);
+
+        comparisons++; // end > 0
+        while (end > 0) {
+            comparisons++; // end > 0
+            arrayAccesses += 3; // swap
+            assignments += 3; // swap
+            tmp = array[end];
+            array[end] = array[0];
+            array[0] = tmp;
+
+            siftDown(array, 0, end - 1);
+
+            assignments++; // end--
+            end--;
+        }
+
+        System.out.println("Heap sort\nComparisons: " + comparisons + " Assignments: " + assignments + " Array accesses: " + arrayAccesses);
+    }
+
+    private static void heapify(Integer[] array, int count) {
+        int start;
+
+        assignments++; // start = ...
+        start = (count - 2) / 2;
+
+        comparisons++; // start >= 0
+        while (start >= 0) {
+            comparisons++; // start >= 0
+            siftDown(array, start, count - 1);
+
+            assignments++; // start--
+            start--;
+        }
+    }
+
+    private static void siftDown(Integer[] array, int start, int end){
+        int root;
+
+        assignments++; // root = start
+        root = start;
+
+        comparisons++; // ... <= end
+        while ((root * 2 + 1) <= end) {
+            comparisons++; // ... <= end
+
+            int child;
+
+            assignments++; // child = ...
+            child = root * 2 + 1;
+
+            comparisons += 2; // if
+            if (child + 1 <= end && array[child] < array[child + 1]) {
+                assignments++; // child++
+                child++;
+            }
+
+            comparisons++; // if
+            if(array[root] < array[child]) {
+                int tmp;
+
+                arrayAccesses += 3; // swap
+                assignments += 3; // swap
+                tmp = array[root];
+                array[root] = array[child];
+                array[child] = tmp;
+                root = child;
+            } else {
+                return;
+            }
+        }
+    }
+
+    public static void quick(Integer[] array) {
+        resetCounters();
+        quick(array, 0, array.length - 1);
+        System.out.println("Quick sort\nComparisons: " + comparisons + " Assignments: " + assignments + " Array accesses: " + arrayAccesses);
+    }
+
+    private static void quick(Integer[] array, int low, int high) {
+        int middle;
+        int pivot;
+        int tmp;
+
+        assignments += 4;
+        arrayAccesses++; // array[middle]
+        middle = low + (high - low) / 2;
+        pivot = array[middle];
+        i = low;
+        j = high;
+
+        comparisons++; // i <= j
+        while (i <= j) {
+            comparisons++; // i <= j
+            comparisons++; //array[j] < pivot
+            arrayAccesses++; // array[j]
+            while (array[i] < pivot) {
+                comparisons++; //array[j] < pivot
+                arrayAccesses++; // array[j]
+                assignments++; // i++;
+                i++;
+            }
+
+            comparisons++; // array[j] > pivot
+            while (array[j] > pivot) {
+                comparisons++; // array[j] > pivot
+                assignments++; // j--
+                j--;
+            }
+
+            comparisons++; // i <= j
+            if (i <= j) {
+                comparisons++; // i <= j
+                arrayAccesses += 3; // swap
+                assignments += 3; // swap
+                tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+                assignments += 2; // next 2 lines
+                i++;
+                j--;
+            }
+        }
+        comparisons += 2; // if's
+        if (low < j) {
+            assignments += 2; // function call;
+            quick(array, low, j);
+        }
+        if (high > i) {
+            assignments += 2; // function call;
+            quick(array, i, high);
+        }
+    }
+
+    public static void merge(Integer[] array) {
+        resetCounters();
+        merge(array, 0, array.length - 1);
+        System.out.println("Merge sort\nComparisons: " + comparisons + " Assignments: " + assignments + " Array accesses: " + arrayAccesses);
+    }
+
+    private static void merge(Integer[] array, int low, int high) {
+        int middle;
+        comparisons++; // low < high
+        if (low < high) {
+            comparisons++; // low < high
+            assignments++; // middle = ...
+            middle = low + (high - low) / 2;
+
+            assignments += 7; // next 3 calls
+            merge(array, low, middle);
+            merge(array, middle + 1, high);
+            fusion(array, low, middle, high);
+        }
+    }
+
+    private static void fusion(Integer[] array, int low, int middle, int high) {
+        Integer[] tmp = new Integer[array.length];
+        int k;
+
+        assignments++; // int i = low
+        comparisons++; // i <= high
+        for (int i = low; i <= high; i++) {
+            comparisons++; // i <= high
+            assignments++; // i++
+            assignments++; // tmp[i] = array[i]
+            arrayAccesses += 2; // next line
+            tmp[i] = array[i];
+        }
+
+        assignments += 3; // next 3 lines
+        i = low;
+        j = middle + 1;
+        k = low;
+
+        comparisons += 2; // next line
+        while (i <= middle && j <= high) {
+            comparisons += 3; // while and if
+            arrayAccesses += 2; // if
+            if (tmp[i] <= tmp[j]) {
+                arrayAccesses += 2; // array[k] = tmp[i]
+                assignments += 2; // array[k] = tmp[i] and i++;
+                array[k] = tmp[i];
+                i++;
+            } else {
+                arrayAccesses += 2; // array[k] = tmp[i]
+                assignments += 2; // array[k] = tmp[i] and i++;
+                array[k] = tmp[j];
+                j++;
+            }
+            assignments++; // k++
+            k++;
+        }
+        comparisons++; // i <= middle
+        while (i <= middle) {
+            comparisons++; // i <= middle
+            arrayAccesses += 2; // array[k] = tmp[i]
+            assignments += 3; // next 3 lines
+            array[k] = tmp[i];
+            k++;
+            i++;
+        }
+    }
 
     private static void resetCounters() {
         comparisons = 0L;
